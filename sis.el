@@ -1124,6 +1124,7 @@ Only used for `terminal-focus-reporting'."
   "Predicate on STR has no /other/ language characters."
   (not (sis--string-match-p sis-other-pattern str)))
 
+;;;###autoload
 (cl-defstruct sis-back-detect ; result of backward detect
   to ; point after first non-blank char in the same line
   char ; first non-blank char at the same line (just before position `to')
