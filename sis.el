@@ -1,3 +1,4 @@
+;; -*-no-byte-compile: t; -*-
 ;;; sis.el --- Less manual switch for native or OS input source (input method). -*- lexical-binding: t; -*-
 
 ;; URL: https://github.com/laishulu/emacs-smart-input-source
