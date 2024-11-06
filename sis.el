@@ -317,7 +317,7 @@ meanings as `string-match-p'."
   (unless (and (functionp sis-do-get)
                (functionp sis-do-set))
     (cond
-     ((and (string= (window-system) "mac")
+     ((and (not sis--ism)
            (fboundp 'mac-input-source))
       ;; EMP
       (setq sis--ism 'emp))
