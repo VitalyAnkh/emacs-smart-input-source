@@ -1089,7 +1089,7 @@ Possible values: 'normal, 'prefix, 'sequence.")
     (remove-hook 'minibuffer-exit-hook #'sis--minibuffer-exit-handler)
 
     ;; for preserving buffer input source
-    (remove-function 'after-focus-change-function
+    (remove-function after-focus-change-function
                    #'sis--respect-focus-change-advice)
 
     (dolist (trigger sis-respect-go-english-triggers)
