@@ -1046,7 +1046,7 @@ Possible values: 'normal, 'prefix, 'sequence.")
        (add-hook 'minibuffer-setup-hook #'sis--minibuffer-setup-handler)
        (add-hook 'minibuffer-exit-hook #'sis--minibuffer-exit-handler)
 
-       (advice-add 'after-focus-change-function :after
+       (add-function :after after-focus-change-function
                    #'sis--respect-focus-change-advice)
 
        (dolist (trigger sis-respect-go-english-triggers)
@@ -1090,7 +1090,7 @@ Possible values: 'normal, 'prefix, 'sequence.")
     (remove-hook 'minibuffer-exit-hook #'sis--minibuffer-exit-handler)
 
     ;; for preserving buffer input source
-    (advice-remove 'after-focus-change-function
+    (remove-function 'after-focus-change-function
                    #'sis--respect-focus-change-advice)
 
     (dolist (trigger sis-respect-go-english-triggers)
