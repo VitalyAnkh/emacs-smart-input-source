@@ -1,4 +1,4 @@
-;;; sis.el --- Less manual switch for native or OS input source (input method). -*- lexical-binding: t; -*-
+;;; sis.el --- Minimize manual input source (input method) switching -*- lexical-binding: t; -*-
 
 ;; URL: https://github.com/laishulu/emacs-smart-input-source
 ;; Created: March 27th, 2020
@@ -259,6 +259,7 @@ custom function: the cursor will be moved to the end of the inline region, and
 (declare-function evil-operator-state-p
                   "ext:evil-states.el" (&optional state) t)
 (declare-function company--active-p "ext:company.el" () t)
+(declare-function company-complete-selection "ext:company.el" () t)
 (declare-function mac-input-source "ext:macfns.c" (&optional SOURCE FORMAT) t)
 (declare-function mac-select-input-source "ext:macfns.c"
                   (SOURCE &optional SET-KEYBOARD-LAYOUT-OVERRIDE-P) t)
@@ -1291,7 +1292,7 @@ If POSITION is not provided, then default to be the current position."
                 (pre-detector (nth 1 trigger))
                 (post-detector (nth 2 trigger))
                 (advice-name (format "sis--context-trigger-advice-%s"
-                                     (symbol-name (eval trigger-fn)))))
+                                     (symbol-name trigger-fn))))
            ;; dynamically create the advice
            (defalias (intern advice-name)
              `(lambda (fn &rest args)
@@ -1306,7 +1307,8 @@ If POSITION is not provided, then default to be the current position."
                   (apply fn args))))
            ;; Add special property to the advice, so it can be easily removed
            (put (intern advice-name) 'sis--context-trigger-advice t)
-           (advice-add (eval trigger-fn) :around (intern advice-name)))))))
+           (advice-add (symbol-function trigger-fn)
+                       :around (intern advice-name)))))))
    (; turn off the mode
     (not sis-context-mode)
     (dolist (buf (buffer-list))
@@ -1314,13 +1316,13 @@ If POSITION is not provided, then default to be the current position."
         (dolist (hook sis-context-hooks)
           (remove-hook hook #'sis-context nil))))
     (dolist (trigger sis-context-triggers)
-      (let ((trigger-fn (eval (nth 0 trigger)))
-            ;; delete advices with property of 'sis--context-trigger-advice
-            (advice-mapc
-             (lambda (advice _)
-               (when (get (intern advice) 'sis--context-trigger-advice)
-                 (advice-remove trigger-fn advice))
-               trigger-fn))))))))
+      (let (trigger-fn (symbol-function (nth 0 trigger)))
+        ;; delete advices with property of 'sis--context-trigger-advice
+        (advice-mapc
+         (lambda (advice _)
+           (when (get (intern advice) 'sis--context-trigger-advice)
+             (advice-remove trigger-fn advice)))
+         trigger-fn))))))
 
 ;;;###autoload
 (define-globalized-minor-mode
@@ -1511,10 +1513,8 @@ START: start position of the inline region."
 
   ;; select input source
   (let* ((back-detect (sis--back-detect-chars))
-         (back-to (sis-back-detect-to back-detect))
-         (back-char (sis-back-detect-char back-detect)))
-
-
+         ;; (back-char (sis-back-detect-char back-detect))
+         (back-to (sis-back-detect-to back-detect)))
     (cond
      (; inline english region
       (eq sis--inline-lang 'english)
@@ -1593,8 +1593,7 @@ START: start position of the inline region."
               (insert-char ?\s))
              (; handled by custom function
               (functionp sis-inline-tighten-head-rule)
-              (funcall sis-inline-tighten-head-rule tighten-fore-to))
-             ))))))
+              (funcall sis-inline-tighten-head-rule tighten-fore-to))))))))
   (delete-overlay sis--inline-overlay)
   (setq sis--inline-overlay nil)
   (pcase sis--inline-lang
