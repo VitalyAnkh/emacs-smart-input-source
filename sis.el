@@ -64,7 +64,7 @@ Should accept a string which is the id of the input source.")
 (defvar sis-auto-refresh-seconds 0.2
   "Idle timer interval to auto refresh input source status from OS.
 
-Emacs-native input method don\\='t need it, set to nil to disable the timer.
+Emacs-native input method don't need it, set to nil to disable the timer.
 
 Note: Set after the modes may have no effect.")
 
@@ -98,9 +98,10 @@ Each trigger should be a cons cell: (cons FN DETECTOR).
     - \\='other: other language context.
 
 Example of adding a trigger:
-
+  \"
   (add-to-list 'sis-respect-minibuffer-triggers
               (cons 'org-roam-node-find (lambda () 'other)))
+  \"
 
 If no trigger returns a none-nil result, english will be used as default.")
 
@@ -219,7 +220,7 @@ autocomplete rendering a large area with the region background.")
   "Rule to delete head spaces.
 
 Possible values:
-0: don\\='t delete space
+0: don't delete space
 1: delete 1 space if exists
 \\='zero: always ensure no space
 \\='one: always ensure one space
