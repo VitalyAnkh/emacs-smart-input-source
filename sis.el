@@ -98,10 +98,9 @@ Each trigger should be a cons cell: (cons FN DETECTOR).
     - \\='other: other language context.
 
 Example of adding a trigger:
-  \"
-  (add-to-list 'sis-respect-minibuffer-triggers
-              (cons 'org-roam-node-find (lambda () 'other)))
-  \"
+
+  (add-to-list \\='sis-respect-minibuffer-triggers
+               (cons \\='org-roam-node-find (lambda () \\='other)))
 
 If no trigger returns a none-nil result, english will be used as default.")
 
