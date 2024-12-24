@@ -98,10 +98,9 @@ Each trigger should be a cons cell: (cons FN DETECTOR).
     - \\='other: other language context.
 
 Example of adding a trigger:
-#+begin_src elisp
- (add-to-list 'sis-respect-minibuffer-triggers
+
+  (add-to-list 'sis-respect-minibuffer-triggers
               (cons 'org-roam-node-find (lambda () 'other)))
-#+end_src
 
 If no trigger returns a none-nil result, english will be used as default.")
 
@@ -508,8 +507,8 @@ OTHER-SOURCE: OTHER language input source, nil means default,
               ignored by ISM-TYPE of \\='fcitx, \\='fcitx5, \\='w32.
 
 TYPE: TYPE can be \\='native, \\='w32, \\='emp, \\='macism, \\='im-select,
-      \\='fcitx, \\='fcitx5, \\='ibus. nil TYPE fits both \\='emp and
-      \\='macism."
+      \\='fcitx, \\='fcitx5, \\='ibus.
+      nil TYPE fits both \\='emp and \\='macism."
   (when english-source
     (setq sis-english-source english-source))
   (when other-source
@@ -1041,7 +1040,8 @@ Some commands overwrite it.")
 
 - Respect start: start this mode with specific input source.
 - Respect ~evil~: switch to English when leaving ~evil~ ~insert~ mode.
-- Respect prefix key: switch to English for \\<C-c> / \\<C-x> / \\<C-h>.
+- Respect prefix key: switch to English for \\[Control-c] / \\[Control-x] /
+  \\[Control-h].
 - Respect buffer: restore buffer input source when it regain focus."
   :global t
   :group 'sis
@@ -1164,10 +1164,10 @@ Some commands overwrite it.")
   )
 
 (defun sis--back-detect-chars ()
-  "Detect char backward by two steps.
+  "Detect char backward by two step.
 
-  First backward skip blank in the current line,
-  then backward skip blank across lines."
+  Step 1: backward skip blank in the current line.
+  Step 2: backward skip blank across lines."
   (save-excursion
     (skip-chars-backward sis-blank-pattern)
     (let ((to (point))
@@ -1334,7 +1334,7 @@ If POSITION is not provided, then default to be the current position."
         (dolist (hook sis-context-hooks)
           (remove-hook hook #'sis-context nil))))
     (dolist (trigger sis-context-triggers)
-      (let (trigger-fn (symbol-function (nth 0 trigger)))
+      (let ((trigger-fn (symbol-function (nth 0 trigger))))
         ;; delete advices with property of 'sis--context-trigger-advice
         (advice-mapc
          (lambda (advice _)
