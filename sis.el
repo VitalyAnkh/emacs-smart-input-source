@@ -28,6 +28,10 @@
 ;;; Code:
 (require 'subr-x)
 
+(defgroup sis nil
+  "Smart Input Source."
+  :group 'convenience)
+
 (defvar sis-external-ism "macism"
   "Path of external ism.")
 
@@ -88,14 +92,14 @@ Each trigger should be a cons cell: (cons FN DETECTOR).
   - args: nil
   - return:
     - nil: left the determination to later detectors.
-    - 'english: english context.
-    - 'other: other language context.
+    - \\='english: english context.
+    - \\='other: other language context.
 
 Example of adding a trigger:
-#+begin_src elisp
-(add-to-list 'sis-respect-minibuffer-triggers
-             (cons 'org-roam-node-find (lambda () 'other)))
-#+end_src
+  #+begin_src elisp
+  (add-to-list 'sis-respect-minibuffer-triggers
+               (cons 'org-roam-node-find (lambda () 'other)))
+  #+end_src
 
 If no trigger returns a none-nil result, english will be used as default.")
 
@@ -128,8 +132,8 @@ Set after the modes may have no effect.")
 
 Possible values:
 nil: dynamic context
-'english: English context
-'other: other language context.")
+\\='english: English context
+\\='other: other language context.")
 
 (defvar sis-context-detectors
   (list (lambda (&rest _) sis-context-fixed)
@@ -148,8 +152,8 @@ Each detector should:
   - fore-detect: which is the result of (sis--fore-detect-chars).
 - return one of the following values:
   - nil: left the determination to later detectors.
-  - 'english: English context.
-  - 'other: other language context.")
+  - \\='english: English context.
+  - \\='other: other language context.")
 
 (defvar sis-context-aggressive-line t
   "Aggressively detect context across blank lines.")
@@ -169,14 +173,14 @@ Each trigger should be a list: (FN PRE-FN-DETECTOR POST-FN-DETECTOR).
   - args: none
   - return:
     - nil: left the determination to later detectors.
-    - 'english: English context.
-    - 'other: other language context.
+    - \\='english: English context.
+    - \\='other: other language context.
 - POST-FN-DETECTOR:
   - args: none
   - return:
     - nil: left the determination to later detectors.
-    - 'english: English context.
-    - 'other: other language context.
+    - \\='english: English context.
+    - \\='other: other language context.
 Input source will be switched to (or (PRE-FN-DETECTOR) (POST-FN-DETECTOR)) after
 FN is invoked.")
 
@@ -214,10 +218,10 @@ autocomplete rendering a large area with the region background.")
   "Rule to delete head spaces.
 
 Possible values:
-0: don\'t delete space
+0: don\\='t delete space
 1: delete 1 space if exists
-\'zero: always ensure no space
-\'one: always ensure one space
+\\='zero: always ensure no space
+\\='one: always ensure one space
 custom function: the cursor will be moved to the beginning of the inline region,
                  and the function will be called with an argument which is the
                  end position of the leading whitespaces in the inline region.")
@@ -228,8 +232,8 @@ custom function: the cursor will be moved to the beginning of the inline region,
 Possible values:
 0: don't delete space
 1: delete 1 space if exists
-'zero: always ensure no space
-'one: always ensure one space
+\\='zero: always ensure no space
+\\='one: always ensure one space
 custom function: the cursor will be moved to the end of the inline region, and
                    the function will be called with an argument which is the
                    beginning of the tailing whitespaces in the inline region.")
@@ -247,6 +251,7 @@ custom function: the cursor will be moved to the end of the inline region, and
 (define-minor-mode sis-log-mode
   "Log the execution of this package."
   :global t
+  :group 'sis
   :init-value nil)
 
 ;;
@@ -412,7 +417,7 @@ meanings as `string-match-p'."
 (defun sis--update-state (source)
   "Update input source state.
 
-SOURCE should be 'english or 'other."
+SOURCE should be \\='english or \\='other."
 
   (setq sis--previous sis--current)
   (setq sis--current source)
@@ -603,6 +608,7 @@ TYPE: TYPE can be 'native, 'w32, 'emp, 'macism, 'im-select, 'fcitx, 'fcitx5,
 (define-minor-mode sis-auto-refresh-mode
   "Automaticly refresh input source."
   :global t
+  :group 'sis
   :init-value nil
   (cond
    (; turn on the mode
@@ -634,7 +640,7 @@ TYPE: TYPE can be 'native, 'w32, 'emp, 'macism, 'im-select, 'fcitx, 'fcitx5,
 ;; Following codes are mainly about cursor color mode
 ;;
 (defun sis--reset-default-cursor-color ()
-    "Reset default cursor color to nil"
+    "Reset default cursor color to nil."
     (setq sis-default-cursor-color nil))
 
 (defun sis--set-cursor-color-advice (color)
@@ -680,6 +686,7 @@ way."
 (define-minor-mode sis-global-cursor-color-mode
   "Automaticly change cursor color according to input source."
   :global t
+  :group 'sis
   :init-value nil
   (cond
    (; turn on the mode
@@ -945,7 +952,7 @@ Possible values: 'normal, 'prefix, 'sequence.")
           (run-with-timer 0 nil #'sis--respect-post-cmd-timer-fn))))
 
 (defun sis--respect-post-command-handler ()
-  "Handler for `post-command-hook' to preserve input source."
+  "Handler for \\='post-command-hook to preserve input source."
   ;; (setq this-command sis--real-this-command)
   (when sis-log-mode
     (message "post@[%s]: [%s]@key [%s]@cmd [%s]@buf [%s]@override."
@@ -1025,9 +1032,10 @@ Possible values: 'normal, 'prefix, 'sequence.")
 
 - Respect start: start this mode with specific input source.
 - Respect ~evil~: switch to English when leaving ~evil~ ~insert~ mode.
-- Respect prefix key: switch to English for ~C-c~/ ~C-x~/ ~C-h~.
+- Respect prefix key: switch to English for \\<C-c> / \\<C-x> / \\<C-h>.
 - Respect buffer: restore buffer input source when it regain focus."
   :global t
+  :group 'sis
   :init-value nil
   (cond
    (; turn on the mode
@@ -1276,6 +1284,7 @@ If POSITION is not provided, then default to be the current position."
 ;;;###autoload
 (define-minor-mode sis-context-mode
   "Switch input source smartly according to context."
+  :group 'sis
   :init-value nil
   (cond
    (; turn on the mode
@@ -1366,6 +1375,7 @@ If POSITION is not provided, then default to be the current position."
 ;;;###autoload
 (define-minor-mode sis-inline-mode
   "English overlay mode for mixed language editing."
+  :group 'sis
   :init-value nil
   (cond
    (; turn on the mode
