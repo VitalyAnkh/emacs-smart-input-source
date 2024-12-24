@@ -64,8 +64,9 @@ Should accept a string which is the id of the input source.")
 (defvar sis-auto-refresh-seconds 0.2
   "Idle timer interval to auto refresh input source status from OS.
 
-Emacs-nativ input method don\\='t need it. nil to disable the timer.
-Set after the modes may have no effect.")
+Emacs-native input method don\\='t need it, set to nil to disable the timer.
+
+Note: Set after the modes may have no effect.")
 
 (defvar sis-change-hook nil
   "Hook to run when input source changes.")
@@ -97,10 +98,10 @@ Each trigger should be a cons cell: (cons FN DETECTOR).
     - \\='other: other language context.
 
 Example of adding a trigger:
-  #+begin_src elisp
-  (add-to-list 'sis-respect-minibuffer-triggers
-               (cons 'org-roam-node-find (lambda () 'other)))
-  #+end_src
+#+begin_src elisp
+ (add-to-list 'sis-respect-minibuffer-triggers
+              (cons 'org-roam-node-find (lambda () 'other)))
+#+end_src
 
 If no trigger returns a none-nil result, english will be used as default.")
 
@@ -498,11 +499,14 @@ SOURCE should be \\='english or \\='other."
   "Config ism for lazy man.
 
 Run after the modes may have no effect.
+
 ENGLISH-SOURCE: ENGLISH input source, nil means default,
                 ignored by ISM-TYPE of \\='fcitx, \\='fcitx5, \\='native,
                 \\='w32.
+
 OTHER-SOURCE: OTHER language input source, nil means default,
               ignored by ISM-TYPE of \\='fcitx, \\='fcitx5, \\='w32.
+
 TYPE: TYPE can be \\='native, \\='w32, \\='emp, \\='macism, \\='im-select,
       \\='fcitx, \\='fcitx5, \\='ibus. nil TYPE fits both \\='emp and
       \\='macism."
@@ -718,7 +722,7 @@ way."
 (defvar sis--prefix-handle-stage 'normal
   "Processing state of the prefix key.
 
-Possible values: 'normal, 'prefix, 'sequence.")
+Possible values: \\='normal, \\='prefix, \\='sequence.")
 
 (defvar sis--buffer-before-prefix nil
   "Current buffer before prefix.")
