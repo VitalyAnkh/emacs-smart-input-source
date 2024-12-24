@@ -22,8 +22,9 @@
 ;; along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;; This package enables less manual switch for native or OS input source (input
-;; method). For more information see the README in the GitHub repo.
+;; This package Minimize manual input source (input method) switching.
+;;
+;;For more information see the README in the GitHub repo.
 
 ;;; Code:
 (require 'subr-x)
@@ -63,7 +64,7 @@ Should accept a string which is the id of the input source.")
 (defvar sis-auto-refresh-seconds 0.2
   "Idle timer interval to auto refresh input source status from OS.
 
-Emacs-nativ input method don't need it. nil to disable the timer.
+Emacs-nativ input method don\\='t need it. nil to disable the timer.
 Set after the modes may have no effect.")
 
 (defvar sis-change-hook nil
@@ -81,7 +82,7 @@ nil means obtained from the envrionment.")
   "Switch to specific input source when the /respect mode/ is enabled.")
 
 (defvar sis-respect-evil-normal-escape t
-  "<escape> to english in normal state when the /respect mode/ is enabled.")
+  "\\<escape> to english in normal state when the /respect mode/ is enabled.")
 
 (defvar sis-respect-minibuffer-triggers (list)
   "Commands trigger to set input source in minibuffer.
@@ -498,11 +499,13 @@ SOURCE should be \\='english or \\='other."
 
 Run after the modes may have no effect.
 ENGLISH-SOURCE: ENGLISH input source, nil means default,
-                ignored by ISM-TYPE of 'fcitx, 'fcitx5, 'native, 'w32.
+                ignored by ISM-TYPE of \\='fcitx, \\='fcitx5, \\='native,
+                \\='w32.
 OTHER-SOURCE: OTHER language input source, nil means default,
-              ignored by ISM-TYPE of 'fcitx, 'fcitx5, 'w32.
-TYPE: TYPE can be 'native, 'w32, 'emp, 'macism, 'im-select, 'fcitx, 'fcitx5,
-      'ibus. nil TYPE fits both 'emp and 'macism."
+              ignored by ISM-TYPE of \\='fcitx, \\='fcitx5, \\='w32.
+TYPE: TYPE can be \\='native, \\='w32, \\='emp, \\='macism, \\='im-select,
+      \\='fcitx, \\='fcitx5, \\='ibus. nil TYPE fits both \\='emp and
+      \\='macism."
   (when english-source
     (setq sis-english-source english-source))
   (when other-source
@@ -724,7 +727,9 @@ Possible values: 'normal, 'prefix, 'sequence.")
   "Current buffer before prefix.")
 
 (defvar sis--real-this-command nil
-  "Real this command. Some commands overwrite it.")
+  "Real this command.
+
+Some commands overwrite it.")
 
 (defvar sis--respect-post-cmd-timer nil
   "Timer to run after returning to command loop.")
