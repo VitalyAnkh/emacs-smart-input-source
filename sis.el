@@ -1308,11 +1308,11 @@ If POSITION is not provided, then default to be the current position."
      (unless sis--context-triggers-adviced
        (setq sis--context-triggers-adviced t)
        (dolist (trigger sis-context-triggers)
-         (let* ((trigger-fn-symbol (nth 0 trigger))
+         (let* ((trigger-fn-q (nth 0 trigger))
                 (pre-detector (nth 1 trigger))
                 (post-detector (nth 2 trigger))
                 (advice-name (format "sis--context-trigger-advice-%s"
-                                     (symbol-name trigger-fn-symbol))))
+                                     (symbol-name (eval trigger-fn-q)))))
            ;; dynamically create the advice
            (defalias (intern advice-name)
              `(lambda (fn &rest args)
@@ -1327,8 +1327,7 @@ If POSITION is not provided, then default to be the current position."
                   (apply fn args))))
            ;; Add special property to the advice, so it can be easily removed
            (put (intern advice-name) 'sis--context-trigger-advice t)
-           (advice-add (symbol-function trigger-fn-symbol)
-                       :around (intern advice-name)))))))
+           (advice-add (eval trigger-fn-q) :around (intern advice-name)))))))
    (; turn off the mode
     (not sis-context-mode)
     (dolist (buf (buffer-list))
@@ -1336,7 +1335,7 @@ If POSITION is not provided, then default to be the current position."
         (dolist (hook sis-context-hooks)
           (remove-hook hook #'sis-context nil))))
     (dolist (trigger sis-context-triggers)
-      (let ((trigger-fn (symbol-function (nth 0 trigger))))
+      (let ((trigger-fn (eval (nth 0 trigger))))
         ;; delete advices with property of 'sis--context-trigger-advice
         (advice-mapc
          (lambda (advice _)
